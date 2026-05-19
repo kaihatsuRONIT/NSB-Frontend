@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { api } from '../../../../lib/api';
 
-export default function PaymentStatus() {
+function PaymentStatusContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [status, setStatus] = useState('checking');
@@ -66,5 +66,17 @@ export default function PaymentStatus() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function PaymentStatus() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full border-4 border-white/10 border-t-purple-500 animate-spin" />
+            </div>
+        }>
+            <PaymentStatusContent />
+        </Suspense>
     );
 }

@@ -1,10 +1,11 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaHeart, FaShareAlt, FaRandom, FaRedo } from "react-icons/fa";
+import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaRandom, FaRedo } from "react-icons/fa";
 import Loading from "../Loading";
 import { useParams } from "next/navigation";
 import { api } from "../../../lib/api";
 import { useRouter } from "next/navigation"
+import Paywall from "../Paywall";
 
 export default function PlayerPage() {
     const router = useRouter();
@@ -21,11 +22,9 @@ export default function PlayerPage() {
     const [episodes, setEpisodes] = useState([])
     const [pageLoading, setPageLoading] = useState(true);
     const [accessChecked, setAccessChecked] = useState(false);
-
+    const [isPurchased, setIsPurchased] = useState(false);
     const [audioUrl, setAudioUrl] = useState(null);
-
-    // console.log(story)
-    // console.log(episodes)
+    const [showPaywall, setShowPaywall] = useState(false);
 
     const handlePlayPause = async () => {
         if (playing) {
@@ -105,21 +104,34 @@ export default function PlayerPage() {
                 setEpisodes(data.episodes);
 
                 // Check purchase before setting current episode
-                if (!data.isFree) {
+                const epNum = Number(episodeNumber.replace('episode-', ''));
+                const currentEp = data.episodes.find(ep => ep.episodeNumber === epNum);
+
+                if (!currentEp?.isFreePreview) {
                     const purchases = await api.get('/purchases/my');
                     const purchased = Array.isArray(purchases) && purchases.some(
-                        p => p.storyId === data.id && p.status === 'SUCCESS'
+                        p => p.storyId === data.id &&
+                            p.status === 'SUCCESS' &&
+                            (p.expiresAt === null || new Date(p.expiresAt) > new Date())
                     );
                     if (!purchased) {
                         router.replace(`/series/${seriesName}/episodes`);
                         return;
                     }
+                    setIsPurchased(true);
+                } else {
+                    // Free preview — but check if user has purchased anyway
+                    const purchases = await api.get('/purchases/my');
+                    const purchased = Array.isArray(purchases) && purchases.some(
+                        p => p.storyId === data.id &&
+                            p.status === 'SUCCESS' &&
+                            (p.expiresAt === null || new Date(p.expiresAt) > new Date())
+                    );
+                    setIsPurchased(purchased);
                 }
+                // Reaches here if isFreePreview OR purchased
                 setAccessChecked(true);
-
-                const epNum = Number(episodeNumber.replace('episode-', ''));
-                const current = data.episodes.find(ep => ep.episodeNumber === epNum);
-                setCurrentEpisode(current || data.episodes[0]);
+                setCurrentEpisode(currentEp || data.episodes[0]);
             } finally {
                 setPageLoading(false);
             }
@@ -178,7 +190,6 @@ export default function PlayerPage() {
 
         return () => clearInterval(interval);
     }, [currentEpisode?.id, playing]);
-
 
     if (pageLoading || !accessChecked) return <Loading />;
     return (
@@ -329,45 +340,85 @@ export default function PlayerPage() {
             </div>
 
             {/* RIGHT - Episode List */}
-            <div
-                className="flex flex-col lg:w-80 flex-shrink-0 border-t lg:border-t-0 lg:border-l overflow-y-auto"
-                style={{ borderColor: 'rgba(255,255,255,0.08)', maxHeight: '119vh', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-                <div className="px-4 py-4 border-b sticky top-0 z-10 bg-[#0B0B0F]" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                    <h4 className="text-white font-semibold text-sm">Episodes</h4>
-                    <p style={{ color: '#6B7280', fontSize: '12px', marginTop: '2px' }}>{episodes?.length} Episodes</p>
+            <div className="relative flex flex-col lg:w-80 flex-shrink-0 border-t lg:border-t-0 lg:border-l overflow-hidden"
+                style={{ borderColor: 'rgba(255,255,255,0.08)', maxHeight: '119vh' }}>
+
+                {/* Episode List — always rendered */}
+                <div className="flex flex-col h-full overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    <div className="px-4 py-4 border-b sticky top-0 z-10 bg-[#0B0B0F]" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                        <h4 className="text-white font-semibold text-sm">Episodes</h4>
+                        <p style={{ color: '#6B7280', fontSize: '12px', marginTop: '2px' }}>{episodes?.length} Episodes</p>
+                    </div>
+                    <div className="flex flex-col gap-2 p-4">
+                        {episodes.map((ep) => (
+                            <div
+                                key={ep.id}
+                                onClick={() => isPurchased && setCurrentEpisode(ep)}
+                                className="flex items-center gap-3 px-3 py-3 rounded-xl transition"
+                                style={{
+                                    background: ep.id === currentEpisode?.id ? 'rgba(108,92,231,0.15)' : 'rgba(255,255,255,0.03)',
+                                    border: ep.id === currentEpisode?.id ? '1px solid rgba(108,92,231,0.4)' : '1px solid rgba(255,255,255,0.06)',
+                                    cursor: isPurchased ? 'pointer' : 'default',
+                                }}
+                            >
+                                <div
+                                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                                    style={{ background: ep.id === currentEpisode?.id ? 'linear-gradient(90deg, #6C5CE7 0%, #00E5FF 50.13%)' : 'rgba(255,255,255,0.05)' }}
+                                >
+                                    {ep.id === currentEpisode?.id
+                                        ? <FaPlay size={8} className="text-white ml-0.5" />
+                                        : <span style={{ color: '#6B7280', fontSize: '11px', fontWeight: 600 }}>E{ep.episodeNumber}</span>
+                                    }
+                                </div>
+                                <div className="flex flex-col flex-1 min-w-0">
+                                    <span className="text-sm truncate" style={{ color: ep.id === currentEpisode?.id ? '#fff' : '#9CA3AF' }}>{ep.title}</span>
+                                    <span style={{ color: '#6B7280', fontSize: '11px' }}>{Math.floor(ep.duration / 60)}m</span>
+                                </div>
+                                {ep.id === currentEpisode?.id && (
+                                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#00E5FF' }} />
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
-                <div className="flex flex-col gap-2 p-4">
-                    {episodes.map((ep) => (
-                        <div
-                            key={ep.id}
-                            onClick={() => setCurrentEpisode(ep)}
-                            className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition"
-                            style={{
-                                background: ep.current ? 'rgba(108,92,231,0.15)' : 'rgba(255,255,255,0.03)',
-                                border: ep.current ? '1px solid rgba(108,92,231,0.4)' : '1px solid rgba(255,255,255,0.06)',
-                            }}
-                        >
-                            <div
-                                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                                style={{ background: ep.current ? 'linear-gradient(90deg, #6C5CE7 0%, #00E5FF 50.13%)' : 'rgba(255,255,255,0.05)' }}
-                            >
-                                {ep.id === currentEpisode?.id
-                                    ? <FaPlay size={8} className="text-white ml-0.5" />
-                                    : <span style={{ color: '#6B7280', fontSize: '11px', fontWeight: 600 }}>E{ep.episodeNumber}</span>
-                                }
-                            </div>
-                            <div className="flex flex-col flex-1 min-w-0">
-                                <span className="text-sm truncate" style={{ color: ep.current ? '#fff' : '#9CA3AF' }}>{ep.title}</span>
-                                <span style={{ color: '#6B7280', fontSize: '11px' }}>{Math.floor(ep.duration / 60)}m</span>
-                            </div>
-                            {ep.id === currentEpisode?.id && (
-                                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#00E5FF' }} />
-                            )}
+                {/* Paywall Overlay — shown when not purchased */}
+                {!isPurchased && (
+                    <div className="absolute inset-0 flex flex-col items-center p-6 gap-5 text-center z-20"
+                        style={{ background: 'rgba(11,11,15,0.7)', backdropFilter: 'blur(1px)' }}>
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                            style={{ background: 'linear-gradient(90deg, #6C5CE7 0%, #00E5FF 50.13%)' }}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M18 11H6C4.89543 11 4 11.8954 4 13V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V13C20 11.8954 19.1046 11 18 11Z" fill="white" />
+                                <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
                         </div>
-                    ))}
-                </div>
+                        <div className="flex flex-col gap-1">
+                            <h3 className="text-white font-bold text-base">Unlock All Episodes</h3>
+                            <p className="text-gray-400 text-xs">You're listening to a free preview. Purchase to access all episodes.</p>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-xl px-6 py-4 w-full">
+                            <p className="text-gray-400 text-xs mb-1">One-time purchase</p>
+                            <p className="text-white text-3xl font-bold">₹{story?.price}</p>
+                        </div>
+                        <button
+                            onClick={() => setShowPaywall(true)}
+                            className="w-full py-3 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition"
+                            style={{ background: 'linear-gradient(90deg, #6C5CE7 0%, #00E5FF 50.13%)' }}
+                        >
+                            Purchase Now · ₹{story?.price}
+                        </button>
+                    </div>
+                )}
+
+                {/* Paywall Modal */}
+                {showPaywall && (
+                    <Paywall
+                        story={story}
+                        onClose={() => setShowPaywall(false)}
+                        onSuccess={() => { setIsPurchased(true); setShowPaywall(false); }}
+                    />
+                )}
             </div>
         </div>
     );

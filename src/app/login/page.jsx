@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function Page() {
+function LoginContent() {
     const { login } = useAuth();
     const router = useRouter();
     const [email, setEmail] = useState('');
@@ -178,4 +178,14 @@ export default function Page() {
             </div>
         </div>
     );
+}
+
+export default function Page() {
+    return (
+        <>
+            <Suspense fallback={<div className="min-h-screen bg-black" />}>
+                <LoginContent />
+            </Suspense>
+        </>
+    )
 }

@@ -305,17 +305,21 @@ export default function StoriesSection({ onViewEpisodes }) {
                             {
                                 showModal && (
                                     <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
-                                        <div className="w-full max-w-lg rounded-2xl p-6 flex flex-col gap-5"
-                                            style={{ background: '#13131A', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <div className="w-full max-w-lg rounded-2xl flex flex-col"
+                                            style={{ background: '#13131A', border: '1px solid rgba(255,255,255,0.1)', maxHeight: '90vh' }}>
 
-                                            <div className="flex items-center justify-between">
+                                            {/* Fixed Header */}
+                                            <div className="flex items-center justify-between p-6 pb-4"
+                                                style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                                                 <h3 className="text-white font-bold text-lg">{editingStory ? "Edit Story" : "Add New Story"}</h3>
                                                 <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white transition">
                                                     <FaTimes size={14} />
                                                 </button>
                                             </div>
 
-                                            <div className="flex flex-col gap-4">
+                                            {/* Scrollable Body */}
+                                            <div className="flex flex-col gap-4 overflow-y-auto px-6 py-4" style={{ flex: 1 }}>
+
                                                 {/* Title */}
                                                 <div className="flex flex-col gap-1.5">
                                                     <label style={{ color: '#6B7280', fontSize: '12px' }}>Title</label>
@@ -423,7 +427,7 @@ export default function StoriesSection({ onViewEpisodes }) {
                                                                 style={{ background: '#0B0B0F', border: '1px solid rgba(255,255,255,0.08)' }}
                                                             />
                                                         </div>
-                                                        <div className="flex flex-col gap-1.5">
+                                                        <div className="flex flex-col gap-1.5 col-span-2">
                                                             <label style={{ color: '#6B7280', fontSize: '12px' }}>Access Duration (In days)</label>
                                                             <input
                                                                 type="number"
@@ -438,7 +442,7 @@ export default function StoriesSection({ onViewEpisodes }) {
                                                     </div>
                                                 )}
 
-                                                {/* Tags — both add and edit */}
+                                                {/* Tags */}
                                                 <div className="flex flex-col gap-1.5">
                                                     <label style={{ color: '#6B7280', fontSize: '12px' }}>Tags</label>
                                                     <div className="flex gap-2">
@@ -471,11 +475,13 @@ export default function StoriesSection({ onViewEpisodes }) {
                                                         </div>
                                                     )}
                                                 </div>
+
+                                                {error && <p className="text-red-400 text-xs">{error}</p>}
                                             </div>
 
-                                            {error && <p className="text-red-400 text-xs">{error}</p>}
-
-                                            <div className="flex gap-3 justify-end">
+                                            {/* Fixed Footer */}
+                                            <div className="flex gap-3 justify-end p-6 pt-4"
+                                                style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                                                 <button
                                                     onClick={() => setShowModal(false)}
                                                     className="px-5 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-white/10"

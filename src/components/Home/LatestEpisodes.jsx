@@ -11,7 +11,6 @@ export default function LatestEpisodes() {
     useEffect(() => {
         const fetchEpisodes = async () => {
             const data = await api.get('/episodes/latest');
-            console.log('latest episodes:', data);
             if (Array.isArray(data)) setEpisodes(data);
             setLoading(false);
         };

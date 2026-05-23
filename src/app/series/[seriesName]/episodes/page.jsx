@@ -40,8 +40,6 @@ export default function EpisodesPage() {
         }
         fetchedStory();
     }, []);
-
-    console.log(hasPurchased)
     return (
         <>
             {
@@ -57,6 +55,7 @@ export default function EpisodesPage() {
                             onPurchaseSuccess={() => setHasPurchased(true)}
                             publishYear={new Date(story.createdAt).getFullYear()}
                             episodeTitle={story.episodes.filter((ep) => ep.episodeNumber === 1)[0]?.title}
+                            isFreeEpisode={story.episodes.filter((ep) => ep.episodeNumber === 1)[0]?.isFreePreview}
                         />
                         <Episodes story={story} hasPurchased={hasPurchased}
                             purchaseLoading={purchaseLoading}

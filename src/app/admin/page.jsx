@@ -21,8 +21,6 @@ export default function AdminLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [filteredStory, setFilteredStory] = useState("all");
 
-    console.log('filteredStory:', filteredStory, typeof filteredStory);
-
     return (
         <div className="min-h-screen flex bg-[#0B0B0F]">
 

@@ -217,8 +217,9 @@ export default function PlayerPage() {
                         <div
                             className="relative rounded-2xl overflow-hidden"
                             style={{
-                                width: '260px',
-                                height: '260px',
+                                width: '100%',
+                                maxWidth: "800px",
+                                aspectRatio: "16/9",
                                 border: playing ? '2px solid rgba(0,229,255,0.5)' : '2px solid rgba(255,255,255,0.08)',
                                 boxShadow: playing ? '0 0 40px rgba(0,229,255,0.15)' : 'none',
                                 transition: 'all 0.3s',
@@ -341,10 +342,12 @@ export default function PlayerPage() {
 
             {/* RIGHT - Episode List */}
             <div className="relative flex flex-col lg:w-80 flex-shrink-0 border-t lg:border-t-0 lg:border-l overflow-hidden"
-                style={{ borderColor: 'rgba(255,255,255,0.08)', maxHeight: '119vh' }}>
+                style={{ borderColor: 'rgba(255,255,255,0.08)', maxHeight: '119vh', height:"400px" }}>
 
                 {/* Episode List — always rendered */}
                 <div className="flex flex-col h-full overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+
                     <div className="px-4 py-4 border-b sticky top-0 z-10 bg-[#0B0B0F]" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                         <h4 className="text-white font-semibold text-sm">Episodes</h4>
                         <p style={{ color: '#6B7280', fontSize: '12px', marginTop: '2px' }}>{episodes?.length} Episodes</p>

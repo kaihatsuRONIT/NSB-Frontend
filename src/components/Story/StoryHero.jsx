@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Paywall from "../Paywall";
 import { useAuth } from "@/context/AuthContext";
 
-export default function StorySection({ story, publishYear, episodeTitle, hasPurchased, purchaseLoading, onPurchaseSuccess }) {
+export default function StorySection({ story, publishYear, episodeTitle, hasPurchased, purchaseLoading, onPurchaseSuccess, isFreeEpisode }) {
     const { user, loading } = useAuth();
     const [showPaywall, setShowPaywall] = useState(false);
     const router = useRouter();
@@ -17,7 +17,7 @@ export default function StorySection({ story, publishYear, episodeTitle, hasPurc
             router.push('/login');
             return;
         }
-        if (!story?.isFree && !hasPurchased) {
+        if (!isFreeEpisode && !hasPurchased) {
             setShowPaywall(true);
             return;
         }
@@ -87,8 +87,15 @@ export default function StorySection({ story, publishYear, episodeTitle, hasPurc
                             </h1>
 
                             {/* Description */}
-                            <p className="text-gray-400 text-sm md:text-lg leading-relaxed mb-3 max-w-full line-clamp-3 md:line-clamp-none">
-                                {story?.description}
+                            <p className="text-gray-400 text-sm md:text-lg leading-relaxed mb-4 md:mb-6 max-w-full md:max-w-full"
+                                style={{
+                                    maxHeight: '6em',
+                                    overflowY: 'auto',
+                                    scrollbarWidth: 'none',
+                                    msOverflowStyle: 'none',
+                                }}
+                            >
+                                {story.description}
                             </p>
 
                             {/* Episode Name */}

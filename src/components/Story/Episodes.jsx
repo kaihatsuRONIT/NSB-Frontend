@@ -27,8 +27,6 @@ export default function Episodes({ story, hasPurchased,purchaseLoading,onPurchas
 
     const visibleEpisodes = story?.episodes.slice(start, start + visible);
 
-    console.log(story?.episodes)
-
     return (
         <div className="w-full px-6 py-8 bg-black">
             {/* Header */}

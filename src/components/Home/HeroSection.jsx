@@ -76,7 +76,7 @@ export default function HeroSection() {
                         <span>✦</span>
                         <span>{story.category?.toUpperCase()}</span>
                     </div>
-                    <span className="text-gray-400 text-xs md:text-sm">• {story.totalEpisodes} Episodes</span>
+                    <span className="text-gray-400 text-xs md:text-sm">• {story?.episodes?.length} Episodes</span>
                 </div>
 
                 {/* Title */}
@@ -85,7 +85,14 @@ export default function HeroSection() {
                 </h1>
 
                 {/* Description */}
-                <p className="text-gray-400 text-sm md:text-lg leading-relaxed mb-4 md:mb-6 max-w-full md:max-w-[450px] line-clamp-2 md:line-clamp-none">
+                <p className="text-gray-400 text-sm md:text-lg leading-relaxed mb-4 md:mb-6 max-w-full md:max-w-full"
+                    style={{
+                        maxHeight: '6em',
+                        overflowY: 'auto',
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none',
+                    }}
+                >
                     {story.description}
                 </p>
 

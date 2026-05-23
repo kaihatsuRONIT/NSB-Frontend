@@ -58,7 +58,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log('AuthContext mounted');
     fetchProfile();
   }, []);
 

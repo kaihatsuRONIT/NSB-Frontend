@@ -5,7 +5,7 @@ import { api } from "../../../lib/api";
 import { deleteAudio, deleteImage, uploadAudio, uploadImage } from "../../../lib/upload";
 
 
-const emptyForm = { storyId: "", episodeNumber: "", title: "", description: "", duration: "", audioFile: "", thumbnail: "", status: "Draft", isFree: "False" };
+const emptyForm = { storyId: "", episodeNumber: "", episodeEnd: "", episodeLabel: "", title: "", description: "", duration: "", audioFile: "", thumbnail: "", status: "Draft", isFree: "False" };
 
 export default function EpisodesSection({ filterStoryProp = null }) {
     const [filterStory, setFilterStory] = useState(filterStoryProp || null);
@@ -57,6 +57,8 @@ export default function EpisodesSection({ filterStoryProp = null }) {
         setForm({
             storyId: ep.storyId,
             episodeNumber: ep.episodeNumber,
+            episodeEnd: ep.episodeEnd || '',
+            episodeLabel: ep.episodeLabel || '',
             title: ep.title,
             description: ep.description,
             thumbnail: ep.thumbnail,
@@ -109,6 +111,8 @@ export default function EpisodesSection({ filterStoryProp = null }) {
             const payload = {
                 storyId: form.storyId,
                 episodeNumber: Number(form.episodeNumber),
+                episodeEnd: form.episodeEnd ? Number(form.episodeEnd) : null,
+                episodeLabel: form.episodeLabel || null,
                 title: form.title,
                 description: form.description,
                 duration: form.duration,
@@ -116,7 +120,6 @@ export default function EpisodesSection({ filterStoryProp = null }) {
                 thumbnail,
                 isPublished: form.status === 'Published',
                 isFreePreview: form.isFree === "True" ? true : false
-
             };
 
             if (editingEpisode) {
@@ -332,7 +335,7 @@ export default function EpisodesSection({ filterStoryProp = null }) {
                             <span className="text-xs truncate" style={{ color: '#9CA3AF' }}>{ep?.story?.title}</span>
 
                             {/* Episode Number */}
-                            <span className="text-xs font-bold" style={{ color: '#6C5CE7' }}>E{String(ep?.episodeNumber).padStart(2, '0')}</span>
+                            <span className="text-xs font-bold" style={{ color: '#6C5CE7' }}>E{String(ep?.episodeLabel).padStart(2, '0')}</span>
 
                             {/* Duration */}
                             <span style={{ color: '#9CA3AF', fontSize: '13px' }}>{Math.floor(ep?.duration / 60)}:{String(ep.duration % 60).padStart(2, '0')}</span>
@@ -404,14 +407,32 @@ export default function EpisodesSection({ filterStoryProp = null }) {
                                     </div>
                                     <div className="flex flex-col gap-1.5">
                                         <label style={{ color: '#6B7280', fontSize: '12px' }}>Episode Number</label>
-                                        <input
-                                            type="number"
-                                            value={form.episodeNumber}
-                                            onChange={(e) => { setForm({ ...form, episodeNumber: e.target.value }); setEpNumError(''); }}
-                                            placeholder="1"
-                                            className="px-4 py-2.5 rounded-xl text-white text-sm outline-none"
-                                            style={{ background: '#0B0B0F', border: `1px solid ${epNumError ? '#ef4444' : 'rgba(255,255,255,0.08)'}` }}
-                                        />
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="number"
+                                                value={form.episodeNumber}
+                                                onChange={(e) => { setForm({ ...form, episodeNumber: e.target.value, episodeLabel: e.target.value + (form.episodeEnd ? `-${form.episodeEnd}` : '') }); setEpNumError(''); }}
+                                                placeholder="1"
+                                                className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm outline-none"
+                                                style={{ background: '#0B0B0F', border: `1px solid ${epNumError ? '#ef4444' : 'rgba(255,255,255,0.08)'}` }}
+                                            />
+                                            <span style={{ color: '#6B7280', fontSize: '12px' }}>to</span>
+                                            <input
+                                                type="number"
+                                                value={form.episodeEnd || ''}
+                                                onChange={(e) => {
+                                                    const end = e.target.value;
+                                                    setForm({
+                                                        ...form,
+                                                        episodeEnd: end ? Number(end) : null,
+                                                        episodeLabel: end ? `${form.episodeNumber}-${end}` : String(form.episodeNumber)
+                                                    });
+                                                }}
+                                                placeholder="optional"
+                                                className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm outline-none"
+                                                style={{ background: '#0B0B0F', border: '1px solid rgba(255,255,255,0.08)' }}
+                                            />
+                                        </div>
                                         {epNumError && <p style={{ color: '#ef4444', fontSize: '11px' }}>{epNumError}</p>}
                                     </div>
                                 </div>

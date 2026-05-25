@@ -4,6 +4,7 @@ import { FaStar } from "react-icons/fa";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { api } from "../../../lib/api";
 import { useRouter } from "next/navigation";
+import { getTotalEpisodes } from "@/helper/getTotalEpisodes";
 
 export default function TrendingStories() {
     const [stories, setStories] = useState([]);
@@ -108,7 +109,7 @@ export default function TrendingStories() {
                                 />
                                 <div className="absolute top-2 left-2 right-2 flex justify-between items-center">
                                     <span className="text-white text-[10px] bg-black/50 px-2 py-0.5 rounded-md">
-                                        {story.totalEpisodes} Episodes
+                                        {getTotalEpisodes(story?.episodes || [])} Episodes
                                     </span>
                                     <span className="text-white text-[10px] bg-black/50 px-2 py-0.5 rounded-md">
                                         {story.category}

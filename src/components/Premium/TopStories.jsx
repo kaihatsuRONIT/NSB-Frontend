@@ -5,6 +5,7 @@ import { IoMdSearch } from 'react-icons/io';
 import { api } from '../../../lib/api';
 import Paywall from '../Paywall';
 import Loading from '../Loading';
+import { getTotalEpisodes } from '@/helper/getTotalEpisodes';
 
 export default function TopStories() {
     const [stories, setStories] = useState([]);
@@ -57,6 +58,7 @@ export default function TopStories() {
         setLoadingMore(false);
     };
 
+    console.log(stories)
     return (
         <>
             {
@@ -135,7 +137,7 @@ export default function TopStories() {
                                                     <div className="flex items-center gap-1 mt-1">
                                                         {/* <FaStar size={11} className="text-yellow-400" /> */}
                                                         {/* <span className="text-gray-400 text-xs">{story.ratingAverage?.toFixed(1) || '5.0'}</span> */}
-                                                        <span className="text-gray-600 text-xs">{story.totalEpisodes} Episodes</span>
+                                                        <span className="text-gray-600 text-xs">{getTotalEpisodes(story.episodes || [])} Episodes</span>
                                                     </div>
                                                 </div>
 

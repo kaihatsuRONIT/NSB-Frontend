@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { api } from "../../../lib/api";
 import { useRouter } from "next/navigation"
 import Paywall from "../Paywall";
+import { getTotalEpisodes } from "@/helper/getTotalEpisodes";
 
 export default function PlayerPage() {
     const router = useRouter();
@@ -95,6 +96,7 @@ export default function PlayerPage() {
         audioRef.current.volume = pct / 100;
     };
 
+
     useEffect(() => {
         if (!seriesName || !episodeNumber) return;
         const fetchStoryData = async () => {
@@ -105,7 +107,27 @@ export default function PlayerPage() {
 
                 // Check purchase before setting current episode
                 const epNum = Number(episodeNumber.replace('episode-', ''));
-                const currentEp = data.episodes.find(ep => ep.episodeNumber === epNum);
+
+                // Find episode that contains this episode number (handles ranges like 1-2)
+                let currentEp = data.episodes.find(ep => {
+                    if (ep.episodeEnd) {
+                        return epNum >= ep.episodeNumber && epNum <= ep.episodeEnd;
+                    }
+                    return ep.episodeNumber === epNum;
+                });
+
+                // If found but epNum is not the start, redirect to the start episode
+                if (currentEp && currentEp.episodeNumber !== epNum) {
+                    router.replace(`/series/${seriesName}/episode-${currentEp.episodeNumber}`);
+                    return;
+                }
+
+                // If not found, fallback to first episode
+                if (!currentEp) {
+                    currentEp = data.episodes[0];
+                    router.replace(`/series/${seriesName}/episode-${currentEp.episodeNumber}`);
+                    return;
+                }
 
                 if (!currentEp?.isFreePreview) {
                     const purchases = await api.get('/purchases/my');
@@ -241,7 +263,7 @@ export default function PlayerPage() {
                             className="absolute -top-3 -right-3 w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold"
                             style={{ background: 'linear-gradient(90deg, #6C5CE7 0%, #00E5FF 50.13%)' }}
                         >
-                            E{String(currentEpisode?.episodeNumber).padStart(2, '0')}
+                            E{String(currentEpisode?.episodeLabel).padStart(2, '0')}
                         </div>
                     </div>
 
@@ -342,7 +364,7 @@ export default function PlayerPage() {
 
             {/* RIGHT - Episode List */}
             <div className="relative flex flex-col lg:w-80 flex-shrink-0 border-t lg:border-t-0 lg:border-l overflow-hidden"
-                style={{ borderColor: 'rgba(255,255,255,0.08)', maxHeight: '119vh', height:"400px" }}>
+                style={{ borderColor: 'rgba(255,255,255,0.08)', maxHeight: '119vh', height: "400px" }}>
 
                 {/* Episode List — always rendered */}
                 <div className="flex flex-col h-full overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -350,7 +372,7 @@ export default function PlayerPage() {
 
                     <div className="px-4 py-4 border-b sticky top-0 z-10 bg-[#0B0B0F]" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                         <h4 className="text-white font-semibold text-sm">Episodes</h4>
-                        <p style={{ color: '#6B7280', fontSize: '12px', marginTop: '2px' }}>{episodes?.length} Episodes</p>
+                        <p style={{ color: '#6B7280', fontSize: '12px', marginTop: '2px' }}>{getTotalEpisodes(episodes || [])} Episodes</p>
                     </div>
                     <div className="flex flex-col gap-2 p-4">
                         {episodes.map((ep) => (
@@ -368,9 +390,11 @@ export default function PlayerPage() {
                                     className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                                     style={{ background: ep.id === currentEpisode?.id ? 'linear-gradient(90deg, #6C5CE7 0%, #00E5FF 50.13%)' : 'rgba(255,255,255,0.05)' }}
                                 >
-                                    {ep.id === currentEpisode?.id
+                                    {ep.id !== currentEpisode?.id
                                         ? <FaPlay size={8} className="text-white ml-0.5" />
-                                        : <span style={{ color: '#6B7280', fontSize: '11px', fontWeight: 600 }}>E{ep.episodeNumber}</span>
+                                        : <span style={{ color: '#ffffff', fontSize: '11px', fontWeight: 600 }}>
+                                            E{ep.episodeLabel || ep.episodeNumber}
+                                        </span>
                                     }
                                 </div>
                                 <div className="flex flex-col flex-1 min-w-0">

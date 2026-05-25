@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../lib/api";
 import { useRouter } from "next/navigation";
-import { FaPlay, FaPlus } from "react-icons/fa";
+import { FaPlay} from "react-icons/fa";
+import { getTotalEpisodes } from "@/helper/getTotalEpisodes";
 
 export default function HeroSection() {
     const [stories, setStories] = useState([]);
@@ -29,6 +30,9 @@ export default function HeroSection() {
     }, [stories]);
 
     const story = stories[currentIndex];
+    const totalEpisodes = getTotalEpisodes(story?.episodes || [])
+    console.log('episodes:', totalEpisodes);
+    console.log('episodes raw:', story?.episodes);
 
     if (!story) return (
         <div className="relative w-full h-72 md:h-163 overflow-hidden bg-black animate-pulse">
@@ -76,7 +80,7 @@ export default function HeroSection() {
                         <span>✦</span>
                         <span>{story.category?.toUpperCase()}</span>
                     </div>
-                    <span className="text-gray-400 text-xs md:text-sm">• {story?.episodes?.length} Episodes</span>
+                    <span className="text-gray-400 text-xs md:text-sm">• {totalEpisodes} Episodes</span>
                 </div>
 
                 {/* Title */}

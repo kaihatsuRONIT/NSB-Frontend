@@ -4,6 +4,7 @@ import StoryCard from "./StoryCard";
 import { useEffect, useState } from "react";
 import { api } from "../../../lib/api";
 import Loading from "../Loading";
+import { getTotalEpisodes } from "@/helper/getTotalEpisodes";
 
 export default function SeriesGrid({ search, category, sort }) {
     const [stories, setStories] = useState([]);
@@ -54,6 +55,8 @@ export default function SeriesGrid({ search, category, sort }) {
         }
     };
 
+    console.log(stories)
+
     return (
         <>
             {pageLoading ? (
@@ -78,7 +81,7 @@ export default function SeriesGrid({ search, category, sort }) {
                                     image={item.coverImage}
                                     title={item.title}
                                     slug={item.slug}
-                                    episodes={item.episodes.length}
+                                    episodes={getTotalEpisodes(item.episodes)}
                                     rating={5}
                                 />
                             ))}

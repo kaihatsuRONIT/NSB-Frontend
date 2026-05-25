@@ -61,7 +61,7 @@ export default function LatestEpisodes() {
                     />
                     <div className="absolute inset-0" style={{ background: 'linear-gradient(0deg, #0B0B0F 0%, rgba(11,11,15,0.5) 50%, transparent 100%)' }} />
                     <div className="absolute top-4 left-4">
-                        <span className="text-yellow-400 font-black text-xl tracking-wide drop-shadow-lg">EP {featured.episodeNumber}</span>
+                        <span className="text-yellow-400 font-black text-xl tracking-wide drop-shadow-lg">EP {featured.episodeLabel}</span>
                         <p className="text-white font-black text-2xl tracking-widest drop-shadow-lg leading-tight">{featured.story.title}</p>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -90,7 +90,7 @@ export default function LatestEpisodes() {
                                 />
                                 <div className="absolute inset-0" style={{ background: 'linear-gradient(0deg, #0B0B0F 0%, rgba(11,11,15,0.3) 60%, transparent 100%)' }} />
                                 <div className="absolute top-2 left-2">
-                                    <span className="text-yellow-400 font-bold text-xs bg-black/40 px-1.5 py-0.5 rounded">EP {ep.episodeNumber}</span>
+                                    <span className="text-yellow-400 font-bold text-xs bg-black/40 px-1.5 py-0.5 rounded">EP {ep.episodeLabel}</span>
                                 </div>
                                 <div className="absolute bottom-0 left-0 right-0 p-3">
                                     <h3 className="text-white text-xs font-semibold leading-tight mb-0.5">{ep.title}</h3>
@@ -114,7 +114,7 @@ export default function LatestEpisodes() {
                                 />
                                 <div className="absolute inset-0" style={{ background: 'linear-gradient(0deg, #0B0B0F 0%, rgba(11,11,15,0.3) 60%, transparent 100%)' }} />
                                 <div className="absolute top-2 left-2">
-                                    <span className="text-yellow-400 font-bold text-xs bg-black/40 px-1.5 py-0.5 rounded">EP {ep.episodeNumber}</span>
+                                    <span className="text-yellow-400 font-bold text-xs bg-black/40 px-1.5 py-0.5 rounded">EP {ep.episodeLabel}</span>
                                 </div>
                                 <div className="absolute bottom-0 left-0 right-0 p-3">
                                     <h3 className="text-white text-xs font-semibold leading-tight mb-0.5">{ep.title}</h3>

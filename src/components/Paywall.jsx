@@ -10,7 +10,7 @@ export default function Paywall({ story, onClose, onSuccess }) {
 
     useEffect(() => {
         const initSDK = async () => {
-            cashfreeRef.current = await load({ mode: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox' });
+            cashfreeRef.current = await load({ mode: process.env.NEXT_PUBLIC_CASHFREE_MODE || 'sandbox' });
         };
         initSDK();
     }, []);

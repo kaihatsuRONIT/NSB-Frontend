@@ -40,6 +40,7 @@ export default function EpisodesPage() {
         }
         fetchedStory();
     }, []);
+
     return (
         <>
             {

@@ -80,7 +80,7 @@ export default function EpisodeResults({ search }) {
                         />
                         <div className="flex flex-col flex-1 min-w-0">
                             <p className="text-white text-sm font-semibold truncate">{ep.title}</p>
-                            <p style={{ color: '#6B7280', fontSize: '12px' }}>{ep.story.title} • Ep {ep.episodeNumber} • {formatTime(ep.duration)}</p>
+                            <p style={{ color: '#6B7280', fontSize: '12px' }}>{ep.story.title} • Ep {ep.episodeLabel} • {formatTime(ep.duration)}</p>
                         </div>
                         <button
                             className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition"

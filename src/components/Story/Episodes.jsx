@@ -66,6 +66,7 @@ export default function Episodes({ story, hasPurchased,purchaseLoading,onPurchas
                         title={ep.title}
                         description={ep.description}
                         isFreeEpisode={ep.isFreePreview}
+                        episodeLabel={ep.episodeLabel}
                         story={story}
                         duration={Math.floor(ep.duration / 60)}
                     />

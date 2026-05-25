@@ -5,7 +5,7 @@ import Paywall from "../Paywall";
 import { api } from "../../../lib/api";
 import { useAuth } from "@/context/AuthContext";
 
-export default function EpisodeCard({ image, episodeNumber, title, description, duration, story, hasPurchased, purchaseLoading, onPurchaseSuccess, isFreeEpisode }) {
+export default function EpisodeCard({ image, episodeNumber, title, description, duration, story, hasPurchased, purchaseLoading, onPurchaseSuccess, isFreeEpisode, episodeLabel }) {
     const { user, loading } = useAuth();
     const [showPaywall, setShowPaywall] = useState(false);
     const router = useRouter();
@@ -84,9 +84,9 @@ export default function EpisodeCard({ image, episodeNumber, title, description, 
                             {/* Info */}
                             <div className="flex flex-col gap-2 px-4 py-4">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-white text-base font-semibold">{episodeNumber}. {title}</h3>
+                                    <h3 className="text-white text-base font-semibold">{episodeLabel}. {title}</h3>
                                     <span className="text-xs font-semibold flex-shrink-0 ml-2" style={{ color: '#00E5FF' }}>
-                                        E{String(episodeNumber).padStart(2, '0')}
+                                        E{String(episodeLabel).padStart(2, '0')}
                                     </span>
 
                                 </div>
@@ -112,7 +112,7 @@ export default function EpisodeCard({ image, episodeNumber, title, description, 
                                     style={{ background: '#00E3FD', letterSpacing: '1.2px' }}
                                 >
                                     <span>▶</span>
-                                    <span>Play Episode {episodeNumber}</span>
+                                    <span>Play Episode {episodeLabel}</span>
                                 </span>
                             </div>
 

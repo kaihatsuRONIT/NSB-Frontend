@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import Navbar from "@/components/Navbar";
 import Loading from "@/components/Loading";
 import { api } from '../../../lib/api';
+import { getTotalEpisodes } from "@/helper/getTotalEpisodes";
 
 // const user = {
 //     name: "Arjun Mehta",
@@ -101,6 +102,7 @@ export default function UserProfilePage() {
         if (!loading) fetchAll();
     }, [loading]);
 
+    console.log(purchases)
 
     return (
         <>
@@ -216,7 +218,7 @@ export default function UserProfilePage() {
                                                                                         </p>
                                                                                     ) : null;
                                                                                 })()}
-                                                                                <p style={{ color: '#6B7280', fontSize: '12px' }}>Episode Number : {item?.episode?.episodeNumber}</p>
+                                                                                <p style={{ color: '#6B7280', fontSize: '12px' }}>Episode Number : {item?.episode?.episodeLabel}</p>
                                                                             </div>
                                                                             {item?.completed ? (
                                                                                 <span style={{ color: '#00E5FF', fontSize: '16px', fontWeight: 600 }}>Listen Again!!</span>
@@ -289,7 +291,7 @@ export default function UserProfilePage() {
                                                                 style={{ background: 'rgba(108,92,231,0.15)', color: '#6C5CE7' }}>
                                                                 {item.genre}
                                                             </span>
-                                                            <span style={{ color: '#6B7280', fontSize: '11px' }}>{item?.story?.totalEpisodes} Episodes</span>
+                                                            <span style={{ color: '#6B7280', fontSize: '11px' }}>{getTotalEpisodes(item?.story?.episodes || [])} Episodes</span>
                                                         </div>
                                                         <span style={{ color: '#6B7280', fontSize: '11px' }}>Purchased on {new Date(item?.createdAt).toLocaleDateString()}</span>
                                                     </div>

@@ -4,8 +4,9 @@ import { FaPlus, FaRegPlayCircle } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
 import Paywall from "../Paywall";
 import { useAuth } from "@/context/AuthContext";
+import { getTotalEpisodes } from "@/helper/getTotalEpisodes";
 
-export default function StorySection({ story, publishYear, episodeTitle, hasPurchased, purchaseLoading, onPurchaseSuccess, isFreeEpisode }) {
+export default function StorySection({ story, publishYear, episodeTitle, hasPurchased, purchaseLoading, onPurchaseSuccess, isFreeEpisode}) {
     const { user, loading } = useAuth();
     const [showPaywall, setShowPaywall] = useState(false);
     const router = useRouter();
@@ -77,7 +78,7 @@ export default function StorySection({ story, publishYear, episodeTitle, hasPurc
                                     <span>SCI-FI EPIC</span>
                                 </div>
                                 <div>
-                                    <h1 style={{ fontSize: "14px" }} className="text-[#9CA3AF] font-semibold"> • {story?.episodes?.length} Episodes • {publishYear}</h1>
+                                    <h1 style={{ fontSize: "14px" }} className="text-[#9CA3AF] font-semibold"> • {getTotalEpisodes(story?.episodes || [])} Episodes • {publishYear}</h1>
                                 </div>
                             </div>
 
@@ -124,7 +125,7 @@ export default function StorySection({ story, publishYear, episodeTitle, hasPurc
                                         style={{ background: '#00E3FD', letterSpacing: '1.2px' }}
                                     >
                                         <span>▶</span>
-                                        <span>Play Episode 1</span>
+                                        <span>Play Episode 1-2</span>
                                     </span>
                                 </div>
                             </div>

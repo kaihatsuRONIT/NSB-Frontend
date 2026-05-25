@@ -76,7 +76,7 @@ export default function ContinueListening() {
                             />
                             <div className="flex flex-col flex-1 min-w-0">
                                 <h3 className="text-white text-sm font-semibold leading-snug mb-0.5">{p.story.title}</h3>
-                                <p className="text-gray-400 text-xs mb-2 truncate">Ep {p.episode.episodeNumber}: {p.episode.title}</p>
+                                <p className="text-gray-400 text-xs mb-2 truncate">Ep {p.episode.episodeLabel}: {p.episode.title}</p>
                                 <div className="w-full h-1 bg-white/10 rounded-full mb-1.5">
                                     <div
                                         className="h-1 rounded-full"

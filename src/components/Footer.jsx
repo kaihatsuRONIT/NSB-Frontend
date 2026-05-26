@@ -14,6 +14,11 @@ export default function Footer() {
         "Terms and Conditions": "/policies#terms-and-conditions",
         "Refund Policy": "/policies#refund-policy",
     };
+    const socialLinks = [
+        { icon: FaTwitter, link: "https://www.x.com" },
+        { icon: FaInstagram, link: "https://www.instagram.com/namanstorybook?igsh=aWRmOHlhaTh0ODBh" },
+        { icon: FaGlobe, link: "https://www.namanstorybook.in" }
+    ]
     return (
         <footer className="w-full bg-[#0B0B0F] border-t border-white/10">
             {/* Main Footer */}
@@ -32,9 +37,11 @@ export default function Footer() {
                         Elevating digital narratives through immersive audio experiences and cinematic storytelling.
                     </p>
                     <div className="flex gap-3 mt-1">
-                        {[FaTwitter, FaInstagram, FaGlobe].map((Icon, i) => (
+                        {socialLinks.map((social, i) => (
                             <div key={i} className="w-8 h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center cursor-pointer hover:bg-white/20 transition">
-                                <Icon size={13} className="text-gray-400" />
+                                <a href={`${social.link}`} target="_blank" rel="noopener noreferrer">
+                                    <social.icon size={13} className="text-gray-400" />
+                                </a>
                             </div>
                         ))}
                     </div>
